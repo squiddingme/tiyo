@@ -39,7 +39,7 @@ import { METADATA } from './metadata';
 
 export * from './metadata';
 
-const API_URL = 'https://api.comick.cc';
+const API_URL = 'https://api.comick.fun';
 
 const SEARCH_LIMIT = 8;
 
@@ -57,8 +57,8 @@ type ComickSearchSeries = {
 
 export class ExtensionClient extends ExtensionClientAbstract {
   override getSeries: GetSeriesFunc = (id: string) => {
-    return this.webviewFn(`${API_URL}/comic/${id.split(':')[0]}?tachiyomi=true`)
-      .then((response: WebviewResponse) => {
+    return this.webviewFn(`${API_URL}/comic/${id.split(':')[0]}?tachiyomi=true`).then(
+      (response: WebviewResponse) => {
         const json = JSON.parse(
           new JSDOM(response.text).window.document.getElementsByTagName('pre')[0].textContent
         );
@@ -84,12 +84,13 @@ export class ExtensionClient extends ExtensionClientAbstract {
           remoteCoverUrl: json.comic.cover_url,
         };
         return series;
-      });
+      }
+    );
   };
 
   override getChapters: GetChaptersFunc = (id: string) => {
-    return this.webviewFn(`${API_URL}/comic/${id.split(':')[2]}/chapters?limit=99999`)
-      .then((response: WebviewResponse) => {
+    return this.webviewFn(`${API_URL}/comic/${id.split(':')[2]}/chapters?limit=99999`).then(
+      (response: WebviewResponse) => {
         const json = JSON.parse(
           new JSDOM(response.text).window.document.getElementsByTagName('pre')[0].textContent
         );
@@ -112,15 +113,16 @@ export class ExtensionClient extends ExtensionClientAbstract {
             read: false,
           };
         });
-      });
+      }
+    );
   };
 
   override getPageRequesterData: GetPageRequesterDataFunc = (
     seriesSourceId: string,
     chapterSourceId: string
   ) => {
-    return this.webviewFn(`${API_URL}/chapter/${chapterSourceId}?tachiyomi=true`)
-      .then((response: WebviewResponse) => {
+    return this.webviewFn(`${API_URL}/chapter/${chapterSourceId}?tachiyomi=true`).then(
+      (response: WebviewResponse) => {
         const json = JSON.parse(
           new JSDOM(response.text).window.document.getElementsByTagName('pre')[0].textContent
         );
@@ -131,7 +133,8 @@ export class ExtensionClient extends ExtensionClientAbstract {
           numPages: pageFilenames.length,
           pageFilenames,
         };
-      });
+      }
+    );
   };
 
   override getPageUrls: GetPageUrlsFunc = (pageRequesterData: PageRequesterData) => {
@@ -189,35 +192,34 @@ export class ExtensionClient extends ExtensionClientAbstract {
       }
     }
 
-    return this.webviewFn(`${API_URL}/v1.0/search?` + params)
-      .then((response: WebviewResponse) => {
-        const json = JSON.parse(
-          new JSDOM(response.text).window.document.getElementsByTagName('pre')[0].textContent
-        );
-        const seriesList: Series[] = json.map((seriesObj: ComickSearchSeries) => {
-          const series: Series = {
-            id: undefined,
-            extensionId: METADATA.id,
-            sourceId: `${seriesObj.slug}:-1`,
-            title: seriesObj.title,
-            altTitles: [],
-            description: '',
-            authors: [],
-            artists: [],
-            tags: [],
-            status: SeriesStatus.ONGOING,
-            originalLanguageKey: LanguageKey.MULTI,
-            numberUnread: 0,
-            remoteCoverUrl: seriesObj.cover_url,
-          };
-          return series;
-        });
-
-        return {
-          seriesList,
-          hasMore: seriesList.length === SEARCH_LIMIT,
+    return this.webviewFn(`${API_URL}/v1.0/search?` + params).then((response: WebviewResponse) => {
+      const json = JSON.parse(
+        new JSDOM(response.text).window.document.getElementsByTagName('pre')[0].textContent
+      );
+      const seriesList: Series[] = json.map((seriesObj: ComickSearchSeries) => {
+        const series: Series = {
+          id: undefined,
+          extensionId: METADATA.id,
+          sourceId: `${seriesObj.slug}:-1`,
+          title: seriesObj.title,
+          altTitles: [],
+          description: '',
+          authors: [],
+          artists: [],
+          tags: [],
+          status: SeriesStatus.ONGOING,
+          originalLanguageKey: LanguageKey.MULTI,
+          numberUnread: 0,
+          remoteCoverUrl: seriesObj.cover_url,
         };
+        return series;
       });
+
+      return {
+        seriesList,
+        hasMore: seriesList.length === SEARCH_LIMIT,
+      };
+    });
   };
 
   override getSettingTypes: GetSettingTypesFunc = () => {
