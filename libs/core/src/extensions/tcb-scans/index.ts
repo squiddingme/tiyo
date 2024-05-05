@@ -25,7 +25,7 @@ import { METADATA } from './metadata';
 
 export * from './metadata';
 
-const BASE_URL = 'https://onepiecechapters.com';
+const BASE_URL = 'https://tcb-backup.bihar-mirchi.com';
 
 const parseDirectoryResponse = (doc: Document): SeriesListResponse => {
   const items = doc.getElementsByClassName('bg-card border border-border rounded p-3 mb-3')!;
