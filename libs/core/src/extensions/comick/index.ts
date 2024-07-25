@@ -39,7 +39,7 @@ import { METADATA } from './metadata';
 
 export * from './metadata';
 
-const API_URL = 'https://api.comick.fun';
+const API_URL = 'https://api.comick.io';
 
 const SEARCH_LIMIT = 8;
 
